@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Identifier - Registered Indian Athletes Pool</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Stadium Grid Backdrop and Running Track Lanes Overlay -->
+    <div class="stadium-overlay"></div>
+    <div class="track-lanes-overlay"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-ranking-star" style="color: var(--neon-blue); font-size: 1.5rem;"></i>
+                <h2>Talent ID</h2>
+            </div>
+            <nav style="flex-grow: 1;">
+                <ul class="sidebar-menu">
+                    <li><a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                    <li><a class="sidebar-link active" href="athletes.html"><i class="fa-solid fa-users"></i><span>All Athletes</span></a></li>
+                    <li><a class="sidebar-link" id="nav-my-profile" href="#"><i class="fa-solid fa-user-tie"></i><span>My Profile</span></a></li>
+                    <li><a class="sidebar-link" href="index.html"><i class="fa-solid fa-house"></i><span>Home Page</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-snippet" id="sidebar-user-info">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="user-avatar" id="sidebar-user-avatar" alt="Avatar">
+                    <div class="user-info">
+                        <h4 id="sidebar-user-name">Athlete Name</h4>
+                        <p id="sidebar-user-role">ATHLETE</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="logoutUser()" style="width: 100%; margin-top: 12px; padding: 8px 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper" id="main-content-layout" style="margin-left: 260px;">
+            <!-- Header -->
+            <header class="header" id="app-header">
+                <div>
+                    <h3 id="header-page-title" class="glow-text">National Talent Pool</h3>
+                </div>
+                <div class="header-search" id="header-search-bar" style="display: block;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search athletes, sports, state..." id="global-search-input" onkeyup="applyFilters()">
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="content-container">
+                
+                <!-- Main layout with filters and grid -->
+                <div class="coach-grid-layout" style="margin-top: 10px;">
+                    <!-- Filter Sidebar -->
+                    <aside class="filter-sidebar glass-card" style="padding: 24px;">
+                        <h3 style="font-size: 1.1rem; margin-bottom: 20px; color: var(--text-white); border-bottom: 1px solid var(--card-border); padding-bottom: 10px;">
+                            <i class="fa-solid fa-filter"></i> Search Filters
+                        </h3>
+                        
+                        <div class="filter-group">
+                            <h4>Sports Focus</h4>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Football" onchange="applyFilters()"> <span>Football</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Basketball" onchange="applyFilters()"> <span>Basketball</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Athletics" onchange="applyFilters()"> <span>Athletics</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Swimming" onchange="applyFilters()"> <span>Swimming</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Tennis" onchange="applyFilters()"> <span>Tennis</span></label>
+                            <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Cricket" onchange="applyFilters()"> <span>Cricket</span></label>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>State / Region</h4>
+                            <select id="filter-state" class="form-control" onchange="applyFilters()" style="width: 100%; background: #000; border-color: var(--card-border); color: #fff;">
+                                <option value="">All States</option>
+                                <option value="Haryana">Haryana</option>
+                                <option value="Punjab">Punjab</option>
+                                <option value="Kerala">Kerala</option>
+                                <option value="Tamil Nadu">Tamil Nadu</option>
+                                <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                <option value="Manipur">Manipur</option>
+                                <option value="Maharashtra">Maharashtra</option>
+                            </select>
+                        </div>
+                        
+                        <div class="filter-group">
+                            <h4>Sort By Performance</h4>
+                            <select id="filter-sort" class="form-control" onchange="applyFilters()" style="width: 100%; background: #000; border-color: var(--card-border); color: #fff;">
+                                <option value="score-desc">Score: High to Low</option>
+                                <option value="rank-asc">AI Rank: Top First</option>
+                                <option value="age-asc">Age: Youngest First</option>
+                            </select>
+                        </div>
+                    </aside>
+
+                    <!-- Athlete Cards Grid -->
+                    <div>
+                        <div class="glass-card" style="padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                            <div>Showing <span id="filtered-count" style="color: var(--neon-blue); font-weight: 700;">0</span> Athletes matching selection criteria</div>
+                        </div>
+
+                        <div class="athlete-grid" id="athletes-grid-container">
+                            <!-- Dynamic Athlete Cards loaded here -->
+                        </div>
+                    </div>
+                </div>
+
+            </main>
+        </div>
+    </div>
+
+    <!-- ATHLETE DOSSIER PROFILE MODAL -->
+    <div id="dossier-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3,2,6,0.9); backdrop-filter: blur(8px); z-index: 4000; align-items: center; justify-content: center;">
+        <div class="glass-card" style="width: 90%; max-width: 900px; max-height: 90vh; padding: 30px; position: relative; overflow-y: auto;">
+            <button onclick="closeDossierModal()" class="btn-secondary" style="position: absolute; top: 20px; right: 20px; padding: 8px 14px; border-radius: 50%;">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            
+            <div id="dossier-modal-content">
+                <!-- Populated dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <!-- FLOATING VIDEO MODAL PLAYER -->
+    <div id="landing-video-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3,2,6,0.9); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center;">
+        <div class="glass-card" style="width: 90%; max-width: 800px; padding: 24px; position: relative;">
+            <button onclick="closeLandingVideoModal()" class="btn-secondary" style="position: absolute; top: -50px; right: 0; padding: 8px 14px; border-radius: 50%; font-size: 1.1rem; border-color: var(--neon-blue);">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="modal-video-title" class="glow-text" style="margin-bottom: 12px;">Highlight Video</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <span class="verified-badge" id="modal-video-badge"><i class="fa-solid fa-shield"></i> Trust: --</span>
+                <span class="sport-tag" id="modal-video-sport" style="margin: 0; padding: 2px 10px; font-size: 0.75rem;">Sport</span>
+            </div>
+            
+            <div class="video-preview-wrapper" style="margin-top: 0; aspect-ratio: 16/9; position: relative;">
+                <video id="modal-video-player" controls autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <canvas id="modal-pose-canvas" class="pose-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+                
+                <div class="pose-overlay-panel" id="modal-pose-panel">
+                    <div class="pose-overlay-header">
+                        <span class="pulse-dot"></span>
+                        <span>AI Biomechanics Scanner</span>
+                    </div>
+                    <div id="modal-pose-kpi-1">Joints: 12 Tracking</div>
+                    <div id="modal-pose-kpi-2">Gait: --</div>
+                    <div id="modal-pose-kpi-3">Takeoff: --</div>
+                </div>
+            </div>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-gray); line-height: 1.5;" id="modal-video-detail">
+                Pose coordinate overlays.
+            </div>
+        </div>
+    </div>
+
+    <script src="athletes.js"></script>
+</body>
+</html>

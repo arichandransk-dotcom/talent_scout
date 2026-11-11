@@ -1,0 +1,173 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Identifier - Athlete Dossier Details</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Stadium Grid Backdrop and Running Track Lanes Overlay -->
+    <div class="stadium-overlay"></div>
+    <div class="track-lanes-overlay"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-ranking-star" style="color: var(--neon-blue); font-size: 1.5rem;"></i>
+                <h2>Talent ID</h2>
+            </div>
+            <nav style="flex-grow: 1;">
+                <ul class="sidebar-menu">
+                    <li><a class="sidebar-link" href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                    <li><a class="sidebar-link active" href="athletes.html"><i class="fa-solid fa-users"></i><span>All Athletes</span></a></li>
+                    <li><a class="sidebar-link" id="nav-my-profile" href="#"><i class="fa-solid fa-user-tie"></i><span>My Profile</span></a></li>
+                    <li><a class="sidebar-link" href="index.html"><i class="fa-solid fa-house"></i><span>Home Page</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-snippet" id="sidebar-user-info">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="user-avatar" id="sidebar-user-avatar" alt="Avatar">
+                    <div class="user-info">
+                        <h4 id="sidebar-user-name">Athlete Name</h4>
+                        <p id="sidebar-user-role">ATHLETE</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="logoutUser()" style="width: 100%; margin-top: 12px; padding: 8px 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper" id="main-content-layout" style="margin-left: 260px;">
+            <!-- Header -->
+            <header class="header" id="app-header">
+                <div>
+                    <h3 id="header-page-title" class="glow-text">Athlete Dossier Dossier</h3>
+                </div>
+                <div class="header-actions">
+                    <a class="btn-secondary" href="athletes.html" style="text-decoration: none; font-size: 0.8rem; padding: 8px 16px;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                    </a>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="content-container">
+                <div class="profile-grid" style="margin-top: 10px;">
+                    <!-- Left Sidebar Info Card -->
+                    <div class="profile-sidebar-card glass-card" style="padding: 24px; text-align: center;">
+                        <img src="" id="profile-detail-avatar" alt="Athlete Photo" style="width: 130px; height: 130px; border-radius: 50%; object-fit: cover; border: 3px solid var(--neon-blue);">
+                        <h2 id="profile-detail-name" style="margin-top: 15px; font-size: 1.4rem;">--</h2>
+                        <span class="sport-tag" id="profile-detail-sport" style="display: inline-block; margin-top: 8px; font-weight: 700; text-transform: uppercase;">--</span>
+                        
+                        <div style="margin-top: 12px; margin-bottom: 20px;">
+                            <span class="verified-badge" id="profile-detail-badge"><i class="fa-solid fa-circle-check"></i> Verified Profile</span>
+                        </div>
+
+                        <!-- Radar Skills Chart -->
+                        <div class="radar-wrapper" style="margin-top: 20px; display: flex; justify-content: center;">
+                            <canvas class="radar-canvas" id="profile-radar-chart" width="220" height="220"></canvas>
+                        </div>
+                    </div>
+
+                    <!-- Right Details Cards -->
+                    <div class="profile-details-card glass-card" style="padding: 30px;">
+                        <h3 class="profile-section-title">Official Candidate Dossier</h3>
+                        <div class="detail-row" style="margin-top: 20px; display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px;">
+                            <div class="detail-item">
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">Age Group</span>
+                                <strong id="profile-detail-age">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">National ID</span>
+                                <strong id="profile-detail-national-id">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">State / Region</span>
+                                <strong id="profile-detail-state">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span style="display: block; font-size: 0.75rem; color: var(--text-muted);">District / Town</span>
+                                <strong id="profile-detail-district">--</strong>
+                            </div>
+                        </div>
+
+                        <h3 class="profile-section-title" style="margin-top: 35px;">Physical Parameters</h3>
+                        <div class="detail-row" style="margin-top: 20px; display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px;">
+                            <div class="detail-item">
+                                <span>Height / Weight</span>
+                                <strong id="profile-detail-height-weight">-- / --</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Calculated BMI</span>
+                                <strong id="profile-detail-bmi">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Blood Group</span>
+                                <strong id="profile-detail-blood">--</strong>
+                            </div>
+                        </div>
+
+                        <h3 class="profile-section-title" style="margin-top: 35px;">Achievements Timeline</h3>
+                        <div class="achievements-timeline" id="profile-detail-achievements" style="margin-top: 20px;">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <h3 class="profile-section-title" style="margin-top: 35px;">Uploaded Verification Documents</h3>
+                        <div class="certificate-list" id="profile-detail-certificates" style="margin-top: 20px;">
+                            <!-- Populated dynamically -->
+                        </div>
+
+                        <h3 class="profile-section-title" style="margin-top: 35px;">Matches & Training Videos</h3>
+                        <div class="recent-uploads-list" id="profile-detail-videos" style="margin-top: 20px;">
+                            <!-- Populated dynamically -->
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- FLOATING VIDEO MODAL PLAYER -->
+    <div id="landing-video-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3,2,6,0.9); backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center;">
+        <div class="glass-card" style="width: 90%; max-width: 800px; padding: 24px; position: relative;">
+            <button onclick="closeLandingVideoModal()" class="btn-secondary" style="position: absolute; top: -50px; right: 0; padding: 8px 14px; border-radius: 50%; font-size: 1.1rem; border-color: var(--neon-blue);">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="modal-video-title" class="glow-text" style="margin-bottom: 12px;">Highlight Video</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <span class="verified-badge" id="modal-video-badge"><i class="fa-solid fa-shield"></i> Trust: --</span>
+                <span class="sport-tag" id="modal-video-sport" style="margin: 0; padding: 2px 10px; font-size: 0.75rem;">Sport</span>
+            </div>
+            
+            <div class="video-preview-wrapper" style="margin-top: 0; aspect-ratio: 16/9; position: relative;">
+                <video id="modal-video-player" controls autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <canvas id="modal-pose-canvas" class="pose-canvas" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none;"></canvas>
+                
+                <div class="pose-overlay-panel" id="modal-pose-panel">
+                    <div class="pose-overlay-header">
+                        <span class="pulse-dot"></span>
+                        <span>AI Biomechanics Scanner</span>
+                    </div>
+                    <div id="modal-pose-kpi-1">Joints: 12 Tracking</div>
+                    <div id="modal-pose-kpi-2">Gait: --</div>
+                    <div id="modal-pose-kpi-3">Takeoff: --</div>
+                </div>
+            </div>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-gray); line-height: 1.5;" id="modal-video-detail">
+                Pose coordinate overlays.
+            </div>
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toast-bin"></div>
+
+    <script src="profile.js"></script>
+</body>
+</html>

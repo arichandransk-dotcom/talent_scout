@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Identifier - Smart Digital Sports Recruitment Platform</title>
+    <meta name="description" content="Official government-backed digital sports selection, biomechanics tracking, and talent recruitment platform. Connecting national athletes with coaches.">
+    <link rel="stylesheet" href="style.css">
+    <!-- FontAwesome for icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Stadium Grid Backdrop and Running Track Lanes Overlay -->
+    <div class="stadium-overlay"></div>
+    <div class="track-lanes-overlay"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation (hidden in landing view or when not logged in, handled dynamically) -->
+        <aside class="sidebar" id="app-sidebar" style="display: none;">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-ranking-star" style="color: var(--neon-blue); font-size: 1.5rem;"></i>
+                <h2>Talent ID</h2>
+            </div>
+            <nav style="flex-grow: 1;">
+                <ul class="sidebar-menu">
+                    <li><a class="sidebar-link active" onclick="switchView('dashboard')"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                    <li id="nav-coach-panel"><a class="sidebar-link" onclick="switchView('coach')"><i class="fa-solid fa-users"></i><span>All Athletes</span></a></li>
+                    <li id="nav-upload-video" style="display: none;"><a class="sidebar-link" onclick="switchView('upload')"><i class="fa-solid fa-cloud-arrow-up"></i><span>Upload Performance</span></a></li>
+                    <li id="nav-admin-panel" style="display: none;"><a class="sidebar-link" onclick="switchView('admin')"><i class="fa-solid fa-shield-halved"></i><span>Verification Queue</span></a></li>
+                    <li><a class="sidebar-link" id="nav-my-profile-link" onclick="viewMyProfile()"><i class="fa-solid fa-user-tie"></i><span>My Profile</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-snippet" id="sidebar-user-info" style="display: none;">
+                    <img src="https://images.unsplash.com/photo-1517841905240-472988babdf9?w=100&h=100&fit=crop" class="user-avatar" id="sidebar-user-avatar" alt="Avatar">
+                    <div class="user-info">
+                        <h4 id="sidebar-user-name">Athlete Profile</h4>
+                        <p id="sidebar-user-role">Athlete</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="logoutUser()" style="width: 100%; margin-top: 12px; padding: 8px 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper" id="main-content-layout">
+            <!-- Header -->
+            <header class="header" id="app-header">
+                <div>
+                    <h3 id="header-page-title" class="glow-text" onclick="switchView('landing')" style="cursor: pointer;">Talent Identifier</h3>
+                </div>
+                <div class="header-search" id="header-search-bar" style="display: none;">
+                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <input type="text" placeholder="Search athletes, sports, state..." id="global-search-input" onkeyup="handleGlobalSearch(event)">
+                </div>
+                <div class="header-actions">
+                    <div class="notification-bell" onclick="showNotificationPanel()" title="Platform Notifications">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" id="alert-indicator" style="display: none;"></span>
+                    </div>
+                    <div id="header-auth-buttons">
+                        <button class="btn-secondary" onclick="switchView('login')">Login</button>
+                        <button class="btn-glow" onclick="switchView('register')">Register</button>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="content-container">
+
+                <!-- 1. LANDING / HOME VIEW -->
+                <section id="landing-view" class="page-view active">
+                    <div class="landing-hero">
+                        <div class="landing-badge">
+                            <i class="fa-solid fa-circle-check"></i> National Digital Trials Arena
+                        </div>
+                        <h1>Talent <span class="glow-text">Identifier</span></h1>
+                        <p>Smart Digital Sports Recruitment Platform. Connecting talented athletes from rural, district, and national levels directly with sports academies and official coaches.</p>
+                        <div class="hero-actions">
+                            <button class="btn-glow" onclick="switchView('register')"><i class="fa-solid fa-user-plus"></i> Join as Athlete</button>
+                            <button class="btn-secondary" onclick="switchView('login')"><i class="fa-solid fa-user-lock"></i> Coach & Admin Portal</button>
+                        </div>
+                    </div>
+
+                    <h2 class="section-title">Why Talent Identifier?</h2>
+                    <div class="features-grid">
+                        <div class="feature-card glass-card">
+                            <i class="fa-solid fa-video" style="color: var(--neon-blue);"></i>
+                            <h3>Digital Trials</h3>
+                            <p>Eliminate geographical and financial limits. Athletes upload training and competition footage directly for evaluation.</p>
+                        </div>
+                        <div class="feature-card glass-card">
+                            <i class="fa-solid fa-robot" style="color: var(--neon-blue);"></i>
+                            <h3>AI Authenticity Scanner</h3>
+                            <p>Integrated frame analysis and metadata scanner detects forgery in uploaded documents and videos.</p>
+                        </div>
+                        <div class="feature-card glass-card">
+                            <i class="fa-solid fa-chart-simple" style="color: var(--neon-purple);"></i>
+                            <h3>AI Biomechanical Evaluation</h3>
+                            <p>Simulated movement analysis automatically rates kinematics and posture form on match and drills videos.</p>
+                        </div>
+                    </div>
+
+                    <h2 class="section-title">Sports Categories</h2>
+                    <div class="categories-carousel">
+                        <div class="category-card" onclick="openSportExplore('Football')">
+                            <i class="fa-solid fa-volleyball"></i>
+                            <h4>Football</h4>
+                        </div>
+                        <div class="category-card" onclick="openSportExplore('Basketball')">
+                            <i class="fa-solid fa-basketball"></i>
+                            <h4>Basketball</h4>
+                        </div>
+                        <div class="category-card" onclick="openSportExplore('Athletics')">
+                            <i class="fa-solid fa-person-running"></i>
+                            <h4>Athletics</h4>
+                        </div>
+                        <div class="category-card" onclick="openSportExplore('Swimming')">
+                            <i class="fa-solid fa-person-swimming"></i>
+                            <h4>Swimming</h4>
+                        </div>
+                        <div class="category-card" onclick="openSportExplore('Tennis')">
+                            <i class="fa-solid fa-table-tennis-paddle-ball"></i>
+                            <h4>Tennis</h4>
+                        </div>
+                        <div class="category-card" onclick="openSportExplore('Cricket')">
+                            <i class="fa-solid fa-baseball-bat-ball"></i>
+                            <h4>Cricket</h4>
+                        </div>
+                    </div>
+
+                    <!-- REGISTERED ATHLETES ROSTER ON MAIN PAGE -->
+                    <div style="margin-top: 80px;">
+                        <h2 class="section-title">National Talent Pool</h2>
+                        <p class="text-muted" style="text-align: center; margin-top: -30px; margin-bottom: 40px;">Browse enrolled athletes, view physical metrics, and inspect performance videos</p>
+                        <div class="athlete-grid" id="main-athletes-roster">
+                            <!-- Dynamic athletes list on main page -->
+                        </div>
+                    </div>
+
+                    <!-- ATHLETE PERFORMANCE VIDEOS POOL ON MAIN PAGE -->
+                    <div style="margin-top: 80px;">
+                        <h2 class="section-title">Athlete Performance Videos</h2>
+                        <p class="text-muted" style="text-align: center; margin-top: -30px; margin-bottom: 40px;">Watch verified training highlight clips with dynamic AI biomechanics coordinate overlays</p>
+                        <div class="athlete-grid" id="main-videos-pool">
+                            <!-- Dynamic athlete videos list on main page loaded from app.js -->
+                        </div>
+                    </div>
+
+                    <!-- OFFICIAL SELECTOR BOARD ON MAIN PAGE -->
+                    <div style="margin-top: 80px;">
+                        <h2 class="section-title">Official Selectors Board</h2>
+                        <p class="text-muted" style="text-align: center; margin-top: -30px; margin-bottom: 40px;">Verified coaching staff and scouts from state sports authority centers</p>
+                        <div class="athlete-grid" id="main-coaches-roster">
+                            <!-- Dynamic coaches list on main page -->
+                        </div>
+                    </div>
+
+                    <!-- PUBLIC COMMUNITY SPORTS FEED -->
+                    <div class="community-feed-container" style="margin-top: 80px;">
+                        <h2 class="section-title">Athlete Sports Activities</h2>
+                        <p class="text-muted" style="text-align: center; margin-top: -30px; margin-bottom: 40px;">Live performance uploads and accomplishments from around the country</p>
+                        <div class="feed-grid" id="public-sports-feed-container">
+                            <!-- Dynamic community cards loaded here -->
+                        </div>
+                    </div>
+
+                    <div class="stats-landing-wrapper" style="margin-top: 80px;">
+                        <div class="stats-landing-item">
+                            <h2 class="glow-text" id="stat-count-athletes">4,850+</h2>
+                            <p>Registered Athletes</p>
+                        </div>
+                        <div class="stats-landing-item">
+                            <h2 class="glow-text">320+</h2>
+                            <p>Verified Coaches</p>
+                        </div>
+                        <div class="stats-landing-item">
+                            <h2 class="glow-text">15,400+</h2>
+                            <p>Videos Evaluated</p>
+                        </div>
+                        <div class="stats-landing-item">
+                            <h2 class="glow-text" style="color: var(--badge-verified);">1,280+</h2>
+                            <p>Athletes Recruited</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 2. DASHBOARD VIEW -->
+                <section id="dashboard-view" class="page-view">
+                    <!-- WELCOME MISSION & PORTAL IMPORTANCE BANNER -->
+                    <div class="glass-card" style="padding: 30px; margin-bottom: 24px; border-color: rgba(204, 255, 0, 0.25); background: linear-gradient(135deg, rgba(18,18,18,0.7), rgba(255,85,0,0.05)); position: relative; overflow: hidden;">
+                        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(204, 255, 0, 0.15); filter: blur(50px); border-radius: 50%;"></div>
+                        <div style="display: flex; flex-direction: column; gap: 15px;">
+                            <div style="display: flex; align-items: center; gap: 12px;">
+                                <i class="fa-solid fa-circle-info" style="color: var(--neon-blue); font-size: 1.8rem;"></i>
+                                <h2 class="glow-text" style="font-size: 1.6rem; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Portal Mission & Importance</h2>
+                            </div>
+                            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-gray); max-width: 900px;">
+                                Welcome to <strong>Talent Identifier</strong>, the official digital recruitment platform bridging raw athletic potential with national selector boards. 
+                                In conventional physical trials, thousands of promising athletes from rural, tribal, and district levels are overlooked due to travel constraints, lack of resources, or limited selection window hours.
+                            </p>
+                            <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-gray); max-width: 900px; margin-top: -10px;">
+                                This portal democratizes selections by allowing you to upload digital trial videos from anywhere. 
+                                Our system automatically verifies authenticity, maps joint mechanics overlays, and compiles your biometric resume to present directly to verified selectors from state boards and sports academies.
+                            </p>
+                            <div style="display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap;">
+                                <button class="btn-glow" onclick="switchView('coach')" style="padding: 10px 20px; font-size: 0.8rem;">
+                                    <i class="fa-solid fa-users"></i> Explore All Athletes Pool
+                                </button>
+                                <button class="btn-secondary" onclick="switchView('upload')" style="padding: 10px 20px; font-size: 0.8rem; border-color: var(--neon-purple);">
+                                    <i class="fa-solid fa-circle-play"></i> Upload Performance Video
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="stats-grid">
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                            <div class="stat-info">
+                                <h3 id="dashboard-stat-score">--</h3>
+                                <p>Performance Score</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
+                            <div class="stat-info">
+                                <h3 id="dashboard-stat-rank">--</h3>
+                                <p>AI Talent Rank</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+                            <div class="stat-info">
+                                <h3 id="dashboard-stat-status">Unverified</h3>
+                                <p>Govt. Audit Status</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <div class="glass-card" style="padding: 24px;">
+                            <h3 class="profile-section-title">Physical Profile & Biometrics</h3>
+                            <div class="detail-row" style="margin-top: 20px;">
+                                <div class="detail-item">
+                                    <span>Height (cm)</span>
+                                    <strong id="dash-biometric-height">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Weight (kg)</span>
+                                    <strong id="dash-biometric-weight">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Body Mass Index (BMI)</span>
+                                    <strong id="dash-biometric-bmi">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Blood Group</span>
+                                    <strong id="dash-biometric-blood">--</strong>
+                                </div>
+                            </div>
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Selection Invitations & Activities</h3>
+                            <div class="recent-uploads-list" id="dashboard-invitations-list">
+                                <p class="text-muted">No recruitment letters or trials invitations received yet.</p>
+                            </div>
+                        </div>
+
+                        <div class="glass-card" style="padding: 24px;">
+                            <h3 class="profile-section-title">My Performance Videos</h3>
+                            <div class="recent-uploads-list" id="dashboard-videos-list">
+                                <p class="text-muted">No training videos uploaded.</p>
+                            </div>
+                            <button class="btn-glow" onclick="switchView('upload')" style="width: 100%; margin-top: 20px;">
+                                <i class="fa-solid fa-plus"></i> Upload Video
+                            </button>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 3. ATHLETE REGISTRATION VIEW -->
+                <section id="register-view" class="page-view">
+                    <div class="registration-box glass-card">
+                        <div class="registration-header">
+                            <h2 class="glow-text">Athlete Enrolment</h2>
+                            <p>Register with government selection portal</p>
+                        </div>
+
+                        <div class="step-indicator">
+                            <div class="step-indicator-bar" id="reg-progress-bar"></div>
+                            <div class="step-dot active" id="dot-step-1">1</div>
+                            <div class="step-dot" id="dot-step-2">2</div>
+                            <div class="step-dot" id="dot-step-3">3</div>
+                        </div>
+
+                        <form id="athlete-registration-form" onsubmit="handleRegistration(event)">
+                            <!-- Step 1: Personal Dossier & ID Verification -->
+                            <div class="form-step-panel active" id="panel-step-1">
+                                <div class="form-group">
+                                    <label for="reg-name">Full Name (As in ID proof)</label>
+                                    <input type="text" id="reg-name" class="form-control" placeholder="E.g. Rajesh Kumar" required>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reg-email">Email Address</label>
+                                        <input type="email" id="reg-email" class="form-control" placeholder="rajesh@gmail.com" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-password">Password</label>
+                                        <input type="password" id="reg-password" class="form-control" placeholder="Min. 8 characters" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reg-national-id">National ID Number (Aadhaar / Passport / Federation ID)</label>
+                                        <input type="text" id="reg-national-id" class="form-control" placeholder="XXXX-XXXX-XXXX" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-age">Age (Years)</label>
+                                        <input type="number" id="reg-age" class="form-control" min="10" max="45" required>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reg-state">State</label>
+                                        <select id="reg-state" class="form-control" required>
+                                            <option value="">Select State</option>
+                                            <option value="Haryana">Haryana</option>
+                                            <option value="Punjab">Punjab</option>
+                                            <option value="Kerala">Kerala</option>
+                                            <option value="Tamil Nadu">Tamil Nadu</option>
+                                            <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                            <option value="Manipur">Manipur</option>
+                                            <option value="Maharashtra">Maharashtra</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-district">District / City</label>
+                                        <input type="text" id="reg-district" class="form-control" placeholder="E.g. Rohtak" required>
+                                    </div>
+                                </div>
+                                <div style="text-align: right; margin-top: 20px;">
+                                    <button type="button" class="btn-glow" onclick="nextRegStep(2)">Next <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Step 2: Physical Metrics & Sports Focus -->
+                            <div class="form-step-panel" id="panel-step-2">
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reg-sport">Primary Sport Focus</label>
+                                        <select id="reg-sport" class="form-control" required>
+                                            <option value="">Select Sport</option>
+                                            <option value="Football">Football</option>
+                                            <option value="Basketball">Basketball</option>
+                                            <option value="Athletics">Athletics</option>
+                                            <option value="Swimming">Swimming</option>
+                                            <option value="Tennis">Tennis</option>
+                                            <option value="Cricket">Cricket</option>
+                                        </select>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-blood">Blood Group</label>
+                                        <select id="reg-blood" class="form-control" required>
+                                            <option value="O+">O+</option>
+                                            <option value="A+">A+</option>
+                                            <option value="B+">B+</option>
+                                            <option value="AB+">AB+</option>
+                                            <option value="O-">O-</option>
+                                            <option value="A-">A-</option>
+                                            <option value="B-">B-</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="reg-height">Height (cm)</label>
+                                        <input type="number" id="reg-height" class="form-control" placeholder="E.g. 176" required>
+                                    </div>
+                                    <div class="form-group">
+                                        <label for="reg-weight">Weight (kg)</label>
+                                        <input type="number" id="reg-weight" class="form-control" placeholder="E.g. 68" required>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <label>Medical/Anti-Doping Declaration</label>
+                                    <label class="checkbox-label" style="margin-top: 10px;">
+                                        <input type="checkbox" required>
+                                        <span>I declare that I am physically fit and have never tested positive for any banned substances under WADA/NADA codes.</span>
+                                    </label>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 20px;">
+                                    <button type="button" class="btn-secondary" onclick="nextRegStep(1)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button type="button" class="btn-glow" onclick="nextRegStep(3)">Next <i class="fa-solid fa-arrow-right"></i></button>
+                                </div>
+                            </div>
+
+                            <!-- Step 3: Certificate / Documents Proof -->
+                            <div class="form-step-panel" id="panel-step-3">
+                                <div class="form-group">
+                                    <label for="reg-photo">Upload Profile Image</label>
+                                    <input type="file" id="reg-photo" class="form-control" accept="image/*">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-id-proof">National ID Document Proof (PDF/JPG)</label>
+                                    <input type="file" id="reg-id-proof" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                </div>
+                                <div class="form-group">
+                                    <label for="reg-achievements">Sports Certificate / Achievements Proof</label>
+                                    <input type="file" id="reg-achievements" class="form-control" accept=".pdf,.jpg,.jpeg,.png">
+                                    <p class="text-muted" style="font-size: 0.75rem; margin-top: 5px;">Upload state, national, or federation certificate showing details of representation.</p>
+                                </div>
+                                
+                                <!-- AI AUTHENTICITY LOADER FOR REGISTRATION -->
+                                <div id="reg-scan-container" style="display: none; border-top: 1px solid var(--card-border); padding-top: 20px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-family: monospace;">
+                                        <span id="reg-scan-status">Authenticating certificates...</span>
+                                        <span id="reg-scan-percentage">0%</span>
+                                    </div>
+                                    <div class="scanner-container" style="display: block;">
+                                        <div class="scanner-bar" id="reg-scan-bar"></div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label for="reg-achievement-desc">Write your major Achievements & Awards</label>
+                                    <textarea id="reg-achievement-desc" class="form-control" rows="3" placeholder="E.g. Gold Medal in State Athletic Meet 2025, Selected for U-19 District Team."></textarea>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-top: 30px;">
+                                    <button type="button" class="btn-secondary" onclick="nextRegStep(2)"><i class="fa-solid fa-arrow-left"></i> Back</button>
+                                    <button type="submit" class="btn-glow" id="reg-submit-btn">Submit Registration <i class="fa-solid fa-check"></i></button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </section>
+
+                <!-- 4. COACH LOGIN VIEW -->
+                <section id="login-view" class="page-view">
+                    <div class="registration-box glass-card" style="max-width: 420px; padding: 40px 30px;">
+                        <div class="registration-header">
+                            <h2 class="glow-text">Government Portal Login</h2>
+                            <p>Authentication for Coaches, Selectors, and Admins</p>
+                        </div>
+                        <form id="coach-login-form" onsubmit="handleLogin(event)">
+                            <div class="form-group">
+                                <label for="login-email">Portal Email / Username</label>
+                                <input type="email" id="login-email" class="form-control" placeholder="name@sportsauthority.gov" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-password">Password</label>
+                                <input type="password" id="login-password" class="form-control" required>
+                            </div>
+                            <div class="form-group">
+                                <label for="login-role">Select Selection Role</label>
+                                <select id="login-role" class="form-control">
+                                    <option value="coach">Official Coach / Selector</option>
+                                    <option value="admin">System Administrator</option>
+                                    <option value="athlete">Athlete</option>
+                                </select>
+                            </div>
+                            <button type="submit" class="btn-glow" style="width: 100%; margin-top: 10px;">
+                                Authenticate Securely <i class="fa-solid fa-shield-halved"></i>
+                            </button>
+                        </form>
+                        <p class="text-muted" style="text-align: center; margin-top: 20px; font-size: 0.85rem;">
+                            Athlete looking for account? <a href="#" onclick="switchView('register')" style="color: var(--neon-blue); text-decoration: none;">Register here</a>
+                        </p>
+                    </div>
+                </section>
+
+                <!-- 5. ATHLETE PROFILE VIEW -->
+                <section id="profile-view" class="page-view">
+                    <button class="btn-secondary" onclick="goBackToDirectory()" id="profile-back-btn" style="margin-bottom: 24px;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Directory
+                    </button>
+                    <div class="profile-grid">
+                        <div class="profile-sidebar-card glass-card">
+                            <img src="" id="profile-detail-avatar" alt="Athlete Photo">
+                            <h2 id="profile-detail-name">--</h2>
+                            <span class="sport-tag" id="profile-detail-sport">--</span>
+                            
+                            <div style="margin-top: 10px; margin-bottom: 20px; display: flex; flex-direction: column; gap: 8px; align-items: center;">
+                                <span class="verified-badge" id="profile-detail-badge">Pending Audit</span>
+                                <!-- Connection Request Status -->
+                                <div id="connection-status-panel"></div>
+                            </div>
+
+                            <div class="radar-wrapper">
+                                <canvas class="radar-canvas" id="profile-radar-chart"></canvas>
+                            </div>
+                            
+                            <div id="coach-selection-actions" style="margin-top: 20px; display: flex; flex-direction: column; gap: 10px;">
+                                <button class="btn-glow" onclick="toggleShortlist()" id="profile-shortlist-btn">
+                                    <i class="fa-regular fa-star"></i> Shortlist Athlete
+                                </button>
+                                <button class="btn-secondary" onclick="toggleCoachConnectionRequest()" id="profile-connect-btn" style="border-color: var(--neon-purple);">
+                                    <i class="fa-solid fa-user-plus" style="color: var(--neon-purple);"></i> Request Connection
+                                </button>
+                                <button class="btn-secondary" onclick="sendTrialInvitation()" style="border-color: var(--neon-purple);">
+                                    <i class="fa-solid fa-envelope-open-text" style="color: var(--neon-purple);"></i> Send Trial Invitation
+                                </button>
+                            </div>
+
+                            <button class="btn-secondary" onclick="exportProfilePDF()" style="width: 100%; margin-top: 12px;">
+                                <i class="fa-solid fa-file-pdf"></i> Export Sports Resume
+                            </button>
+                        </div>
+
+                        <div class="profile-details-card glass-card">
+                            <h3 class="profile-section-title">Official Athlete Dossier</h3>
+                            <div class="detail-row">
+                                <div class="detail-item">
+                                    <span>Age Group</span>
+                                    <strong id="profile-detail-age">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>National ID (Verified)</span>
+                                    <strong id="profile-detail-national-id">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>State / Region</span>
+                                    <strong id="profile-detail-state">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>District</span>
+                                    <strong id="profile-detail-district">--</strong>
+                                </div>
+                            </div>
+
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Physical Parameters</h3>
+                            <div class="detail-row">
+                                <div class="detail-item">
+                                    <span>Height / Weight</span>
+                                    <strong id="profile-detail-height-weight">-- / --</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Calculated BMI</span>
+                                    <strong id="profile-detail-bmi">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Blood Group</span>
+                                    <strong id="profile-detail-blood">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Medical Clearance</span>
+                                    <strong style="color: var(--badge-verified);"><i class="fa-solid fa-heart-circle-check"></i> Declared Clear</strong>
+                                </div>
+                            </div>
+
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Achievements Timeline</h3>
+                            <div class="achievements-timeline" id="profile-detail-achievements">
+                                <p class="text-muted">No achievements listed.</p>
+                            </div>
+
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Uploaded Verification Documents</h3>
+                            <div class="certificate-list" id="profile-detail-certificates">
+                                <p class="text-muted">No certificate uploads found.</p>
+                            </div>
+
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Matches & Training Highlight Videos</h3>
+                            <div class="recent-uploads-list" id="profile-detail-videos">
+                                <p class="text-muted">No performance videos uploaded yet.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 5B. COACH PROFILE VIEW -->
+                <section id="coach-profile-view" class="page-view">
+                    <button class="btn-secondary" onclick="switchView('landing')" style="margin-bottom: 24px;">
+                        <i class="fa-solid fa-arrow-left"></i> Back to Main Page
+                    </button>
+                    <div class="profile-grid">
+                        <div class="profile-sidebar-card glass-card">
+                            <img src="https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=150&h=150&fit=crop" alt="Coach Photo">
+                            <h2 id="coach-profile-name">--</h2>
+                            <span class="sport-tag" id="coach-profile-sport">-- Focus</span>
+                            
+                            <div style="margin-top: 10px; margin-bottom: 20px;">
+                                <span class="verified-badge" style="background: rgba(0, 240, 255, 0.1); color: var(--neon-blue); border-color: var(--neon-blue);"><i class="fa-solid fa-user-shield"></i> Verified Selector</span>
+                            </div>
+
+                            <div style="font-size: 0.9rem; text-align: left; background: rgba(255,255,255,0.02); padding: 16px; border-radius: 8px; border: 1px solid var(--card-border);">
+                                <div style="margin-bottom: 8px;"><strong>Shortlist Cap:</strong> 50 Players</div>
+                                <div style="margin-bottom: 8px;"><strong>Status:</strong> Active Scouting</div>
+                                <div><strong>Federation:</strong> Sports Authority</div>
+                            </div>
+                        </div>
+
+                        <div class="profile-details-card glass-card">
+                            <h3 class="profile-section-title">Official Selector Credentials</h3>
+                            <div class="detail-row">
+                                <div class="detail-item">
+                                    <span>Department Agency</span>
+                                    <strong id="coach-profile-dept">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Scouting Focus Sport</span>
+                                    <strong id="coach-profile-focus">--</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Connected Athletes</span>
+                                    <strong id="coach-profile-connections-qty">0 Connected</strong>
+                                </div>
+                                <div class="detail-item">
+                                    <span>Auditing Rank Weight</span>
+                                    <strong>State Level Selector</strong>
+                                </div>
+                            </div>
+
+                            <h3 class="profile-section-title" style="margin-top: 30px;">Active Shortlisted Prospects Roster</h3>
+                            <div class="recent-uploads-list" id="coach-profile-shortlist-list">
+                                <p class="text-muted">No athlete prospects shortlisted currently.</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 6. VIDEO UPLOAD VIEW -->
+                <section id="upload-view" class="page-view">
+                    <div class="dashboard-grid">
+                        <div class="glass-card" style="padding: 30px;">
+                            <h3 class="profile-section-title">Record / Upload Video</h3>
+                            
+                            <!-- Toggle between webcam and upload -->
+                            <div style="display: flex; gap: 10px; margin-bottom: 20px;">
+                                <button class="btn-glow" style="flex-grow: 1; font-size: 0.8rem; padding: 10px;" id="btn-toggle-upload" onclick="switchVideoInput('file')">
+                                    <i class="fa-solid fa-file-arrow-up"></i> File Upload
+                                </button>
+                                <button class="btn-secondary" style="flex-grow: 1; font-size: 0.8rem; padding: 10px;" id="btn-toggle-camera" onclick="switchVideoInput('camera')">
+                                    <i class="fa-solid fa-video"></i> Record Live Webcam
+                                </button>
+                            </div>
+
+                            <form id="video-upload-form" onsubmit="handleVideoUpload(event)">
+                                <div class="form-group">
+                                    <label for="upload-title">Video Highlight Title</label>
+                                    <input type="text" id="upload-title" class="form-control" placeholder="E.g. 100m Sprint Heat Finals / Backhand smash drills" required>
+                                </div>
+                                
+                                <div class="form-row">
+                                    <div class="form-group">
+                                        <label for="upload-category">Video Category</label>
+                                        <select id="upload-category" class="form-control" required>
+                                            <option value="Match Highlight">Match Highlights</option>
+                                            <option value="Training Drills">Training Drills</option>
+                                            <option value="Fitness Test">Fitness Assessment</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <!-- FILE INPUT -->
+                                    <div class="form-group" id="input-group-file">
+                                        <label for="upload-file">Select MP4 Video File</label>
+                                        <input type="file" id="upload-file" class="form-control" accept="video/mp4" onchange="previewUploadVideo(event)">
+                                    </div>
+                                    
+                                    <!-- CAMERA CONTROL INDICATOR -->
+                                    <div class="form-group" id="input-group-camera" style="display: none;">
+                                        <label>Webcam Media Status</label>
+                                        <div class="form-control" style="background: rgba(255,23,68,0.05); display: flex; align-items: center;" id="webcam-status-label">
+                                            <span class="recording-dot" id="recording-red-light" style="display: none;"></span>
+                                            <span id="camera-text-indicator">Camera Ready (Stopped)</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="form-group">
+                                    <label>AI Biomechanical Tracking</label>
+                                    <label class="checkbox-label" style="margin-top: 10px;">
+                                        <input type="checkbox" id="upload-pose-toggle" checked onchange="togglePoseSimulator(event)">
+                                        <span>Apply computer vision skeleton overlay mapping for athletic form tracking.</span>
+                                    </label>
+                                </div>
+                                
+                                <!-- AI AUTHENTICITY SCANNER DISPLAY -->
+                                <div id="video-scan-container" style="display: none; border-top: 1px solid var(--card-border); padding-top: 20px; margin-bottom: 20px;">
+                                    <div style="display: flex; justify-content: space-between; font-size: 0.8rem; font-family: monospace;">
+                                        <span id="video-scan-status">Scanning frame consistency...</span>
+                                        <span id="video-scan-percentage">0%</span>
+                                    </div>
+                                    <div class="scanner-container" style="display: block;">
+                                        <div class="scanner-bar" id="video-scan-bar"></div>
+                                    </div>
+                                </div>
+
+                                <button type="submit" class="btn-glow" style="width: 100%; margin-top: 10px;">
+                                    Submit & Analyze Video <i class="fa-solid fa-cloud-arrow-up"></i>
+                                </button>
+                            </form>
+                        </div>
+
+                        <div class="glass-card" style="padding: 30px; display: flex; flex-direction: column; justify-content: space-between;">
+                            <div>
+                                <h3 class="profile-section-title">Video Kinematics Preview</h3>
+                                <div class="video-preview-wrapper">
+                                    <!-- STANDARD VIDEO PREVIEW -->
+                                    <video id="upload-video-preview" muted loop autoplay style="display: none;"></video>
+                                    
+                                    <!-- LIVE WEBCAM CAMERA CONTAINER -->
+                                    <video id="webcam-record-stream" autoplay muted style="display: none; width: 100%; height: 100%; object-fit: cover;"></video>
+                                    
+                                    <canvas id="upload-pose-canvas" class="pose-canvas"></canvas>
+                                    
+                                    <div class="pose-overlay-panel" id="pose-panel" style="display: none;">
+                                        <div class="pose-overlay-header">
+                                            <span class="pulse-dot"></span>
+                                            <span>AI Form Scanner</span>
+                                        </div>
+                                        <div id="pose-kpi-1">Scanning...</div>
+                                        <div id="pose-kpi-2">Back Angle: --</div>
+                                        <div id="pose-kpi-3">Gait: --</div>
+                                    </div>
+                                    
+                                    <div style="display: flex; align-items: center; justify-content: center; height: 100%; color: var(--text-muted);" id="video-preview-placeholder">
+                                        <div style="text-align: center;">
+                                            <i class="fa-solid fa-video-slash" style="font-size: 3rem; margin-bottom: 12px;"></i>
+                                            <p>No video source active.</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <!-- CAMERA TRIGGER CONTROLS -->
+                                <div class="camera-controls-bar" id="webcam-controls" style="display: none;">
+                                    <button class="btn-secondary" style="background: rgba(255,23,68,0.15); border-color: var(--badge-rejected); padding: 8px 16px;" onclick="startWebcamRecording()" id="btn-start-record">
+                                        <i class="fa-solid fa-circle"></i> Record
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 8px 16px;" onclick="stopWebcamRecording()" id="btn-stop-record" disabled>
+                                        <i class="fa-solid fa-stop"></i> Stop
+                                    </button>
+                                    <button class="btn-secondary" style="padding: 8px 16px;" onclick="playbackWebcamRecord()" id="btn-play-record" disabled>
+                                        <i class="fa-solid fa-play"></i> Playback
+                                    </button>
+                                </div>
+                            </div>
+                            <div style="margin-top: 20px;">
+                                <h4 class="glow-text" style="font-size: 0.95rem; margin-bottom: 8px;">Biomechanics & Authenticity Engine:</h4>
+                                <p class="text-muted" style="font-size: 0.8rem; line-height: 1.5;">
+                                    Live recording utilizes standard web cams. Files are scanned locally for digital alterations. Authentic seals are required on certificate PDFs.
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 7. COACH PANEL / ATHLETE SEARCH VIEW -->
+                <section id="coach-view" class="page-view">
+                    <div class="coach-panel-layout">
+                        <!-- Filters -->
+                        <aside class="glass-card filter-sidebar">
+                            <h3 class="profile-section-title" style="margin-bottom: 24px;">Filters</h3>
+                            
+                            <div class="filter-group">
+                                <h4>Sport Categories</h4>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Football" onchange="applyFilters()"> Football</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Basketball" onchange="applyFilters()"> Basketball</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Athletics" onchange="applyFilters()"> Athletics</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Swimming" onchange="applyFilters()"> Swimming</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Tennis" onchange="applyFilters()"> Tennis</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-sport" value="Cricket" onchange="applyFilters()"> Cricket</label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>Age Group</h4>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-age" value="under-16" onchange="applyFilters()"> Under 16</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-age" value="under-18" onchange="applyFilters()"> Under 18</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-age" value="senior" onchange="applyFilters()"> Senior (18+)</label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>Government Verification</h4>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-verify" value="approved" onchange="applyFilters()"> Approved only</label>
+                                <label class="checkbox-label"><input type="checkbox" name="filter-verify" value="pending" onchange="applyFilters()"> Pending approval</label>
+                            </div>
+
+                            <div class="filter-group">
+                                <h4>State / Region</h4>
+                                <select id="filter-state" class="form-control" onchange="applyFilters()">
+                                    <option value="">All States</option>
+                                    <option value="Haryana">Haryana</option>
+                                    <option value="Punjab">Punjab</option>
+                                    <option value="Kerala">Kerala</option>
+                                    <option value="Tamil Nadu">Tamil Nadu</option>
+                                    <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                    <option value="Manipur">Manipur</option>
+                                    <option value="Maharashtra">Maharashtra</option>
+                                </select>
+                            </div>
+                            
+                            <div class="filter-group">
+                                <h4>Sort By Performance</h4>
+                                <select id="filter-sort" class="form-control" onchange="applyFilters()">
+                                    <option value="score-desc">Score: High to Low</option>
+                                    <option value="rank-asc">AI Rank: Top First</option>
+                                    <option value="age-asc">Age: Youngest First</option>
+                                </select>
+                            </div>
+                        </aside>
+
+                        <!-- Athlete Grid -->
+                        <div>
+                            <div class="glass-card" style="padding: 16px 24px; margin-bottom: 24px; display: flex; justify-content: space-between; align-items: center;">
+                                <div>Showing <span id="filtered-count" style="color: var(--neon-blue); font-weight: 700;">0</span> Athletes matching selection criteria</div>
+                                <div style="display: flex; gap: 8px;">
+                                    <button class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;" onclick="toggleShortlistFilter(this)">
+                                        <i class="fa-regular fa-star"></i> Shortlisted
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div class="athlete-grid" id="athletes-grid-container">
+                                <!-- Dynamic Athlete Cards loaded here -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- 8. ADMIN PANEL / AUDITING VIEW -->
+                <section id="admin-view" class="page-view">
+                    <h2 class="glow-text" style="font-size: 2rem; margin-bottom: 24px;">National Selection Audit Console</h2>
+
+                    <div class="stats-grid">
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon"><i class="fa-solid fa-users"></i></div>
+                            <div class="stat-info">
+                                <h3 id="admin-stat-total">--</h3>
+                                <p>Total Enrolled Athletes</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon" style="color: var(--badge-verified); border-color: rgba(0, 230, 118, 0.2); background: rgba(0,230,118,0.1);"><i class="fa-solid fa-circle-check"></i></div>
+                            <div class="stat-info">
+                                <h3 id="admin-stat-verified">--</h3>
+                                <p>Verified Profiles</p>
+                            </div>
+                        </div>
+                        <div class="stat-card glass-card">
+                            <div class="stat-icon" style="color: var(--badge-pending); border-color: rgba(255, 171, 0, 0.2); background: rgba(255,171,0,0.1);"><i class="fa-solid fa-hourglass-half"></i></div>
+                            <div class="stat-info">
+                                <h3 id="admin-stat-pending">--</h3>
+                                <p>Audit Queue Size</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-grid">
+                        <!-- Verification Queue -->
+                        <div class="glass-card" style="padding: 24px; overflow-x: auto;">
+                            <h3 class="profile-section-title">Certificate & Identity Verification Queue</h3>
+                            <table class="admin-table">
+                                <thead>
+                                    <tr>
+                                        <th>Athlete</th>
+                                        <th>Sport</th>
+                                        <th>District/State</th>
+                                        <th>Identity Docs</th>
+                                        <th>Sports Certificates</th>
+                                        <th>Verification Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="admin-verification-queue-rows">
+                                    <!-- Dynamic approval rows -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Heatmaps -->
+                        <div class="glass-card" style="padding: 24px;">
+                            <h3 class="profile-section-title">Geographical Talent Density</h3>
+                            <div class="heatmap-list" id="admin-state-heatmap">
+                                <!-- Dynamic heatmap list -->
+                            </div>
+                            <h3 class="profile-section-title" style="margin-top: 30px;">System Audits Log</h3>
+                            <div class="recent-uploads-list" id="admin-audit-logs" style="font-family: monospace; font-size: 0.75rem; max-height: 200px; overflow-y: auto;">
+                                <!-- Dynamic logs -->
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+            </main>
+
+            <!-- Footer -->
+            <footer class="footer">
+                <div class="footer-brand">Talent Identifier</div>
+                <p>Official Digital Sports Recruitment and selection platform. Developed for State Sports Federations.</p>
+                <p style="margin-top: 12px; font-size: 0.75rem;">© 2026 Sports Authority of India. All rights reserved. Secure JWT encrypted console.</p>
+            </footer>
+        </div>
+    </div>
+
+    <!-- FLOATING GLASSMORPHIC VIDEO MODAL PLAYER FOR LANDING PAGE -->
+    <div id="landing-video-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(3,2,6,0.9); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); z-index: 5000; align-items: center; justify-content: center; animation: fadeIn 0.3s ease-out;">
+        <div class="glass-card" style="width: 90%; max-width: 800px; padding: 24px; position: relative;">
+            <button onclick="closeLandingVideoModal()" class="btn-secondary" style="position: absolute; top: -50px; right: 0; padding: 8px 14px; border-radius: 50%; font-size: 1.1rem; border-color: var(--neon-blue);">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+            <h3 id="modal-video-title" class="glow-text" style="margin-bottom: 12px;">Highlight Video Title</h3>
+            <div style="display: flex; gap: 8px; margin-bottom: 16px;">
+                <span class="verified-badge" id="modal-video-badge"><i class="fa-solid fa-shield"></i> Trust: --</span>
+                <span class="sport-tag" id="modal-video-sport" style="margin: 0; padding: 2px 10px; font-size: 0.75rem;">Sport Category</span>
+            </div>
+            
+            <div class="video-preview-wrapper" style="margin-top: 0; aspect-ratio: 16/9;">
+                <video id="modal-video-player" controls autoplay muted loop style="width: 100%; height: 100%; object-fit: cover;"></video>
+                <canvas id="modal-pose-canvas" class="pose-canvas"></canvas>
+                
+                <div class="pose-overlay-panel" id="modal-pose-panel">
+                    <div class="pose-overlay-header">
+                        <span class="pulse-dot"></span>
+                        <span>AI Biomechanics Scanner</span>
+                    </div>
+                    <div id="modal-pose-kpi-1">Joints: 18 Tracking</div>
+                    <div id="modal-pose-kpi-2">Back Angle: 164°</div>
+                    <div id="modal-pose-kpi-3">Takeoff power: 91%</div>
+                </div>
+            </div>
+            <div style="margin-top: 16px; font-size: 0.85rem; color: var(--text-gray); line-height: 1.5;" id="modal-video-detail">
+                Detailed analysis parameters scanned.
+            </div>
+        </div>
+    </div>
+
+    <!-- Notifications Drawer Panel -->
+    <div id="notifications-overlay" style="display: none; position: fixed; top: 0; right: 0; width: 350px; height: 100vh; background: rgba(8, 7, 13, 0.98); border-left: 1px solid var(--card-border); z-index: 1000; box-shadow: -10px 0 30px rgba(0,0,0,0.8); padding: 30px; animation: slideInLeft 0.3s cubic-bezier(0.4, 0, 0.2, 1) forwards;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 20px;">
+            <h3 class="glow-text" style="margin: 0;"><i class="fa-regular fa-bell"></i> Messages</h3>
+            <button onclick="closeNotificationPanel()" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="notifications-panel-list" style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; max-height: calc(100vh - 120px);">
+            <!-- Dynamic alerts and letters -->
+        </div>
+    </div>
+
+    <!-- Notification Toast Container -->
+    <div class="toast-container" id="toast-bin"></div>
+
+    <!-- Page Logic Script -->
+    <script src="app.js"></script>
+</body>
+</html>

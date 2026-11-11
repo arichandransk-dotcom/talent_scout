@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Talent Identifier - Athlete Workspace Dashboard</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <!-- Stadium Grid Backdrop and Running Track Lanes Overlay -->
+    <div class="stadium-overlay"></div>
+    <div class="track-lanes-overlay"></div>
+
+    <div class="app-container">
+        <!-- Sidebar Navigation -->
+        <aside class="sidebar" id="app-sidebar">
+            <div class="sidebar-logo">
+                <i class="fa-solid fa-ranking-star" style="color: var(--neon-blue); font-size: 1.5rem;"></i>
+                <h2>Talent ID</h2>
+            </div>
+            <nav style="flex-grow: 1;">
+                <ul class="sidebar-menu">
+                    <li><a class="sidebar-link active" href="dashboard.html"><i class="fa-solid fa-chart-line"></i><span>Dashboard</span></a></li>
+                    <li><a class="sidebar-link" href="athletes.html"><i class="fa-solid fa-users"></i><span>All Athletes</span></a></li>
+                    <li><a class="sidebar-link" id="nav-my-profile" href="#"><i class="fa-solid fa-user-tie"></i><span>My Profile</span></a></li>
+                    <li><a class="sidebar-link" href="index.html"><i class="fa-solid fa-house"></i><span>Home Page</span></a></li>
+                </ul>
+            </nav>
+            <div class="sidebar-footer">
+                <div class="user-snippet" id="sidebar-user-info">
+                    <img src="https://images.unsplash.com/photo-1535713875002-d1d0cf377fde?w=100&h=100&fit=crop" class="user-avatar" id="sidebar-user-avatar" alt="Avatar">
+                    <div class="user-info">
+                        <h4 id="sidebar-user-name">Athlete Name</h4>
+                        <p id="sidebar-user-role">ATHLETE</p>
+                    </div>
+                </div>
+                <button class="btn-secondary" onclick="logoutUser()" style="width: 100%; margin-top: 12px; padding: 8px 16px;">
+                    <i class="fa-solid fa-right-from-bracket"></i><span>Logout</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- Main Wrapper -->
+        <div class="main-wrapper" id="main-content-layout" style="margin-left: 260px;">
+            <!-- Header -->
+            <header class="header" id="app-header">
+                <div>
+                    <h3 id="header-page-title" class="glow-text">Athlete Workspace</h3>
+                </div>
+                <div class="header-actions">
+                    <div class="notification-bell" onclick="showNotifications()" title="Notifications" style="position: relative;">
+                        <i class="fa-regular fa-bell"></i>
+                        <span class="notification-badge" id="alert-indicator" style="display: none;"></span>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Main Scrollable Content -->
+            <main class="content-container">
+                
+                <!-- PORTAL IMPORTANCE AND DESCRIPTION CARD -->
+                <div class="glass-card" style="padding: 30px; margin-bottom: 24px; border-color: rgba(204, 255, 0, 0.25); background: linear-gradient(135deg, rgba(18,18,18,0.7), rgba(255,85,0,0.05)); position: relative; overflow: hidden;">
+                    <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(204, 255, 0, 0.15); filter: blur(50px); border-radius: 50%;"></div>
+                    <div style="display: flex; flex-direction: column; gap: 15px;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <i class="fa-solid fa-circle-info" style="color: var(--neon-blue); font-size: 1.8rem;"></i>
+                            <h2 class="glow-text" style="font-size: 1.6rem; margin: 0; text-transform: uppercase; letter-spacing: 0.05em;">Portal Mission & Importance</h2>
+                        </div>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-gray);">
+                            Welcome to <strong>Talent Identifier</strong>, the official digital trials and selection dashboard. 
+                            Conventional physical sports trials often fail to identify high-quality prospects because thousands of talented athletes in rural, district, and regional communities cannot travel due to financial and logistical barriers.
+                        </p>
+                        <p style="font-size: 0.95rem; line-height: 1.6; color: var(--text-gray); margin-top: -10px;">
+                            This platform overcomes these constraints by digitizing selections. Athletes upload training footage directly from their home towns. 
+                            Selectors and coaches from state academies audit digital dossiers, review AI joint pose track analysis, and issue selection camp invitations instantly.
+                        </p>
+                        <div style="display: flex; gap: 12px; margin-top: 10px; flex-wrap: wrap;">
+                            <a class="btn-glow" href="athletes.html" style="text-decoration: none;">
+                                <i class="fa-solid fa-users"></i> View All Registered Athletes
+                            </a>
+                            <a class="btn-secondary" id="dash-view-profile-btn" href="#" style="text-decoration: none; border-color: var(--neon-purple); display: flex; align-items: center; gap: 8px;">
+                                <i class="fa-solid fa-user-tie" style="color: var(--neon-purple);"></i> <span>View My Profile Dossier (4th Page)</span>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Summary -->
+                <div class="stats-grid">
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon"><i class="fa-solid fa-heart-pulse"></i></div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-stat-score">92%</h3>
+                            <p>Performance Score</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon"><i class="fa-solid fa-award"></i></div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-stat-rank">#5</h3>
+                            <p>AI Talent Rank</p>
+                        </div>
+                    </div>
+                    <div class="stat-card glass-card">
+                        <div class="stat-icon"><i class="fa-solid fa-user-check"></i></div>
+                        <div class="stat-info">
+                            <h3 id="dashboard-stat-status">VERIFIED</h3>
+                            <p>Govt. Audit Status</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Athlete Profile Details -->
+                <div class="dashboard-grid" style="margin-top: 24px;">
+                    <div class="glass-card" style="padding: 24px;">
+                        <h3 class="profile-section-title">Physical Profile & Biometrics</h3>
+                        <div class="detail-row" style="margin-top: 20px;">
+                            <div class="detail-item">
+                                <span>Height</span>
+                                <strong id="dash-biometric-height">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Weight</span>
+                                <strong id="dash-biometric-weight">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>BMI (Body Mass Index)</span>
+                                <strong id="dash-biometric-bmi">--</strong>
+                            </div>
+                            <div class="detail-item">
+                                <span>Blood Group</span>
+                                <strong id="dash-biometric-blood">--</strong>
+                            </div>
+                        </div>
+                        
+                        <h3 class="profile-section-title" style="margin-top: 30px;">Anti-Doping Declaration</h3>
+                        <p style="font-size: 0.85rem; color: var(--badge-verified); margin-top: 10px;">
+                            <i class="fa-solid fa-circle-check"></i> Declared Clear: Verified compliant under NADA/WADA regulations.
+                        </p>
+                    </div>
+
+                    <div class="glass-card" style="padding: 24px;">
+                        <h3 class="profile-section-title">My Trial Highlights</h3>
+                        <div class="recent-uploads-list" id="dashboard-videos-list">
+                            <p class="text-muted">No highlight videos uploaded yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    </div>
+
+    <!-- Notifications Drawer -->
+    <div id="notifications-overlay" style="display: none; position: fixed; top: 0; right: 0; width: 350px; height: 100vh; background: rgba(8, 7, 13, 0.98); border-left: 1px solid var(--card-border); z-index: 1000; box-shadow: -10px 0 30px rgba(0,0,0,0.8); padding: 30px;">
+        <div style="display: flex; justify-content: space-between; align-items: center; border-bottom: 1px solid var(--card-border); padding-bottom: 15px; margin-bottom: 20px;">
+            <h3 class="glow-text" style="margin: 0;"><i class="fa-regular fa-bell"></i> Alerts</h3>
+            <button onclick="closeNotifications()" class="btn-secondary" style="padding: 6px 12px; font-size: 0.8rem;"><i class="fa-solid fa-xmark"></i></button>
+        </div>
+        <div id="notifications-panel-list" style="display: flex; flex-direction: column; gap: 15px; overflow-y: auto; max-height: calc(100vh - 120px);">
+            <!-- Loaded dynamically -->
+        </div>
+    </div>
+
+    <script src="dashboard.js"></script>
+</body>
+</html>
